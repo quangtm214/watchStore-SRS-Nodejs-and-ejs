@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bulma@1.0.0/css/bulma.min.css"
+    />
+    <title><%=title%></title>
+    <style>
+      .card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease,
+          background-color 0.3s ease;
+      }
+      .card:hover {
+        cursor: pointer;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        transform: translateY(-10px);
+        background-color: #f9f9f9;
+        border: 1px solid #ddd;
+      }
+      .card-image img {
+        transition: transform 0.3s ease;
+      }
+      .card:hover .card-image img {
+        transform: scale(1.05);
+      }
+    </style>
+  </head>
+  <body>
+
+    <%- include('./navbar.ejs'); %>
+    <div
+      class="fixed-grid has-4-cols-desktop has-2-cols-tablet has-1-cols-mobile"
+    >
+      <div class="grid">
+        <div class="cell is-col-start-2 is-col-span-2">
+          <div class="field has-addons">
+            <form action="/" method="get">
+              <div class="field is-grouped">
+                <div class="control is-expanded">
+                  <input
+                    class="input"
+                    type="text"
+                    placeholder="Search"
+                    name="watchName"
+                    value="<%= typeof session.watchName !== 'undefined' ? session.watchName : '' %>"
+                  />
+                </div>
+                <div class="control">
+                  <div class="select">
+                    <select onchange="search(this.value)" name="brand">
+                      <option value="">All</option>
+                      <% brands?.forEach((brand, index) => { %>
+                      <option value="<%= brand._id %>" <%=(session && session.brand && session.brand === brand._id.toString()) ? 'selected' : '' %>>
+                          <%= brand.brandName %>
+                      </option>
+                      <% }); %>
+                    </select>
+                  </div>
+                </div>
+                <div class="control">
+                  <button type="submit" class="button is-primary">
+                    Search
+                  </button>
+                </div>
+              </div>
+            </form>
+            
+          </div>
+        </div>
+      </div>
+      <div class="grid">
+        <% watches?.forEach((watch, index) => { %>
+        <div class="cell">
+          <div
+            class="card"
+            onclick="window.location.href='/watchs/detail/<%=watch._id%>'"
+          >
+            <div class="card-image">
+              <figure class="image is-4by3">
+                <img src="<%=watch.image %>" alt="<%=watch.watchName%>" />
+              </figure>
+            </div>
+            <div class="card-content">
+              <div class="media">
+                <div class="media-content">
+                  <p class="title is-4"><%=watch.watchName %></p>
+                  <p class="subtitle is-6"><%=watch.brand.brandName %></p>
+                </div>
+              </div>
+
+              <div class="content">
+                <p>
+                  <%= new Intl.NumberFormat('en-US', { style: 'currency',
+                  currency: 'USD' }).format(watch.price) %>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <%});%>
+      </div>
+    </div>
+  </body>
+</html>

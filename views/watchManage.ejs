@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bulma@1.0.0/css/bulma.min.css"
+    />
+    <title><%= title %></title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+      $(document).ready(function () {
+        $("#showAddModal").click(function () {
+          $(".addModal").addClass("is-active");
+        });
+        $(".modal-close, .modal-background").click(function () {
+          $(".addModal").removeClass("is-active");
+        });
+        $("[id^='showEditModal-']").click(function () {
+          const watchId = $(this).data("id");
+          $(`.editModal-${watchId}`).addClass("is-active");
+        });
+        $(".modal-close, .modal-background").click(function () {
+          const watchId = $(this).data("id");
+          $(`.editModal-${watchId}`).removeClass("is-active");
+        });
+        $("[id^='showDeleteModal-']").click(function () {
+          const watchId = $(this).data("id");
+          $(`.deleteModal-${watchId}`).addClass("is-active");
+        });
+        $(".modal-close, .modal-background, .CancelModel").click(function () {
+          const watchId = $(this).data("id");
+          $(`.deleteModal-${watchId}`).removeClass("is-active");
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <%- include('./navbar.ejs'); %>
+    <section class="section">
+      <div class="container">
+        <h1 class="title"><%= title %></h1>
+        <a id="showAddModal" class="button is-primary">Add Watch</a>
+        <table class="table is-striped is-bordered is-hoverable">
+          <thead>
+            <tr>
+              <th>Number</th>
+              <th>watchName</th>
+              <th>image</th>
+              <th>price</th>
+              <th>Automatic</th>
+              <th>watchDescription</th>
+              <th>brand</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% watches?.forEach((watch, index) => { %>
+            <tr>
+              <td><%= index + 1 %></td>
+              <td><%= watch.watchName %></td>
+              <td> 
+                <figure class="image is-128x128"> 
+                    <img src="<%= watch.image %>" />
+                </figure> 
+                </td>
+              <td><%= watch.price %></td>
+              <td>
+                  <%= watch.Automatic %>
+              </td>
+              <td><%= watch.watchDescription %></td>
+              <td><%= watch.brand.brandName %></td>
+              <td>
+                <a
+                  id="showEditModal-<%= watch.id %>"
+                  data-id="<%= watch.id %>"
+                  class="button is-primary"
+                  >Edit</a
+                >
+                <a 
+                id="showDeleteModal-<%= watch.id %>"
+                data-id="<%= watch.id %>"
+                class="button is-danger"
+                  >Delete</a
+                >
+              </td>
+            </tr>
+
+
+            <div class="modal deleteModal-<%= watch.id %>">
+                <div class="modal-background" data-id="<%= watch.id %>"></div>
+                <div class="modal-content">
+                  <div class="box">
+                    <h1 class="title">Confirm Delete This Watch</h1>
+                    <p>Are you sure you want to delete this watch? This action cannot be undone.</p>
+                    <form action="/watchs/delete/<%= watch.id %>" method="get">
+                      <div class="field is-grouped is-grouped-centered">
+                        <div class="control">
+                          <button type="submit" class="button is-danger">Delete</button>
+                        </div>
+                        <div class="control">
+                          <button type="button" class="button is-light CancelModel" data-id="<%= watch.id %>">Cancel</button>
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+                <button class="modal-close is-large" aria-label="close" data-id="<%= watch.id %>"></button>
+              </div>
+              
+
+
+
+
+            <div class="modal editModal-<%= watch.id %>">
+              <div class="modal-background" data-id="<%= watch.id %>"></div>
+              <div class="modal-content">
+                <!-- Any other Bulma elements you want -->
+                <div class="box">
+                  <h1 class="title">Edit Watch</h1>
+                  <form action="/watchs/edit/<%= watch._id %>" method="post">
+                    <div class="field">
+                      <label class="label">Watch Name</label>
+                      <div class="control">
+                        <input
+                          class="input"
+                          type="text"
+                          value="<%= watch.watchName %>"
+                          name="watchName"
+                          placeholder="Enter watch name"
+                          required
+                        />
+                      </div>
+                    </div>
+                    <div class="field">
+                      <label class="label">Image URL</label>
+                      <div class="control">
+                        <input
+                          class="input"
+                          type="text"
+                          value="<%= watch.image %>"
+                          name="image"
+                          placeholder="Enter Image URL"
+                          required
+                        />
+                      </div>
+                    </div>
+                    <div class="field">
+                      <label class="label">Price</label>
+                      <div class="control">
+                        <input
+                          class="input"
+                          type="number"
+                          name="price"
+                          value="<%= watch.price %>"
+                          placeholder="Enter Price"
+                          required
+                        />
+                      </div>
+                    </div>
+                    <div class="field">
+                      <label class="label">Automatic</label>
+                      <div class="control">
+                        <label class="checkbox">
+                          <input type="checkbox" name="Automatic" <% if (watch.Automatic) { %>checked<% } %>/>
+                          Automatic
+                        </label>
+                      </div>
+                    </div>
+                    <div class="field">
+                      <label class="label">Description</label>
+                      <div class="control">
+                        <textarea
+                          class="textarea"
+                          name="watchDescription"
+                          required
+                        ><%= watch.watchDescription %></textarea>
+                      </div>
+                    </div>
+                    <div class="field">
+                      <label class="label">Brand</label>
+                      <div class="control">
+                        <div class="select">
+                          <select name="brand">
+                            <% brands?.forEach((brand) => { %>
+                            <option value="<%= brand.id %>" <% if (brand.id === watch.brand.id) { %>selected<% } %>><%= brand.brandName %></option>
+                            <% }); %>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="field is-grouped">
+                      <div class="control">
+                        <button type="submit" class="button is-link">Submit</button>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+              <button
+                data-id="<%= watch.id %>"
+                class="modal-close is-large"
+                aria-label="close"
+              ></button>
+            </div>
+            <% }); %>
+          </tbody>
+        </table>
+      </div>
+    </section>
+    <div class="modal addModal">
+      <div class="modal-background"></div>
+      <div class="modal-content">
+        <!-- Any other Bulma elements you want -->
+        <div class="box">
+          <h1 class="title">Add New Watch</h1>
+          <form action="/watchs" method="post">
+            <div class="field">
+              <label class="label">Watch Name</label>
+              <div class="control">
+                <input
+                  class="input"
+                  type="text"
+                  name="watchName"
+                  placeholder="Enter watch name"
+                  required
+                />
+              </div>
+            </div>
+            <div class="field">
+              <label class="label">Image URL</label>
+              <div class="control">
+                <input
+                  class="input"
+                  type="text"
+                  name="image"
+                  placeholder="Enter Image URL"
+                  required
+                />
+              </div>
+            </div>
+            <div class="field">
+              <label class="label">Price</label>
+              <div class="control">
+                <input
+                  class="input"
+                  type="number"
+                  name="price"
+                  placeholder="Enter Price"
+                  required
+                />
+              </div>
+            </div>
+            <div class="field">
+              <label class="label">Automatic</label>
+              <div class="control">
+                <label class="checkbox">
+                  <input type="checkbox" name="Automatic" />
+                  Automatic
+                </label>
+              </div>
+            </div>
+            <div class="field">
+              <label class="label">Description</label>
+              <div class="control">
+                <textarea
+                  class="textarea"
+                  name="watchDescription"
+                  required
+                ></textarea>
+              </div>
+            </div>
+            <div class="field">
+              <label class="label">Brand</label>
+              <div class="control">
+                <div class="select">
+                  <select name="brand">
+                    <% brands?.forEach((brand) => { %>
+                    <option value="<%= brand.id %>"><%= brand.brandName %></option>
+                    <% }); %>
+                  </select>
+                </div>
+              </div>
+            <div class="field is-grouped">
+              <div class="control">
+                <button type="submit" class="button is-link">Submit</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+      <button class="modal-close is-large" aria-label="close"></button>
+    </div>
+  </body>
+</html>

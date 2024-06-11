@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bulma@1.0.0/css/bulma.min.css"
+    />
+    <title><%= watch.watchName %> - Details</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+      $(document).ready(function () {
+        $("[id^='showEditModal-']").click(function () {
+          const commentId = $(this).data("id");
+          console.log("commentId", commentId);
+          $(`.editModal-${commentId}`).addClass("is-active");
+        });
+        $(".modal-close, .modal-background").click(function () {
+          const commentId = $(this).data("id");
+          $(`.editModal-${commentId}`).removeClass("is-active");
+        });
+        $("[id^='showDeleteModal-']").click(function () {
+          const commentId = $(this).data("id");
+          $(`.deleteModal-${commentId}`).addClass("is-active");
+        });
+        $(".modal-close, .modal-background, .CancelModel").click(function () {
+          const commentId = $(this).data("id");
+          $(`.deleteModal-${commentId}`).removeClass("is-active");
+        });
+      });
+    </script>
+    <style>
+      .my-comment .author-name {
+        color: #57e3ca; /* Màu xanh cho tên tác giả */
+      }
+    </style>
+  </head>
+  <body>
+    <%- include('./navbar.ejs'); %>
+    <section class="section">
+      <div class="container">
+        <h1 class="title"><%= watch.watchName %></h1>
+        <div class="columns">
+          <div class="column is-one-third">
+            <figure class="image is-4by3">
+              <img src="<%= watch.image %>" alt="<%= watch.watchName %>" />
+            </figure>
+          </div>
+          <div class="column">
+            <div class="card">
+              <div class="card-content">
+                <div class="media">
+                  <div class="media-content">
+                    <p class="title is-4"><%= watch.watchName %></p>
+                    <p class="subtitle is-6">
+                      Brand: <%= watch.brand.brandName %>
+                    </p>
+                  </div>
+                </div>
+                <div class="content">
+                  <p>
+                    <%= new Intl.NumberFormat('en-US', { style: 'currency',
+                    currency: 'USD' }).format(watch.price) %>
+                  </p>
+                  <p>
+                    <strong>Automatic:</strong> <%= watch.Automatic ? 'Yes' :
+                    'No' %>
+                  </p>
+                  <p><%= watch.watchDescription %></p>
+                  <hr />
+                  <h2 class="title is-5">Comments</h2>
+                  <% if (watch.comments.length > 0) { %> <%
+                  watch.comments.forEach(comment => { %>
+                  <article class="media">
+                    <div class="media-content">
+                      <div class="content">
+                        <div class="fixed-grid has-4-cols">
+  <div class="grid">
+    <div class="cell is-col-span-3">
+      <p class="<%= (typeof member !== 'undefined' && member && comment.author._id.toString() === member._id.toString()) ? 'my-comment' : 'other-comment' %>">
+        <strong class="author-name"><%= comment.author.membername %>: </strong>
+        <%= comment.content %>
+        <br />
+        <small>Rating: <%= comment.rating %>/3</small>
+      </p>
+    </div>
+    <% if (typeof member !== 'undefined' && member && comment.author._id.toString() === member._id.toString()) { %>
+      <div class="cell">
+        <a id="showEditModal-<%= comment._id %>" data-id="<%= comment._id %>" class="button is-primary">Edit</a>
+        <a id="showDeleteModal-<%= comment._id %>" data-id="<%= comment._id %>" class="button is-danger">Delete</a>
+      </div>
+    <% } %>
+  </div>
+</div>
+
+
+
+                    <div class="modal deleteModal-<%= comment._id %>">
+                      <div class="modal-background" data-id="<%= comment._id %>"></div>
+                      <div class="modal-content">
+                        <div class="box">
+                          <h1 class="title">Confirm Delete This Comment</h1>
+                          <p>Are you sure you want to delete this Comment? This action cannot be undone.</p>
+                          <form action="/watchs/deleteComment/<%= watch.id %>/<%= comment._id %>" method="get">
+                            <div class="field is-grouped is-grouped-centered">
+                              <div class="control">
+                                <button type="submit" class="button is-danger">Delete</button>
+                              </div>
+                              <div class="control">
+                                <button type="button" class="button is-light CancelModel" data-id="<%= comment._id%>">Cancel</button>
+                              </div>
+                            </div>
+                          </form>
+                        </div>
+                      </div>
+                      <button class="modal-close is-large" aria-label="close" data-id="<%=comment._id %>"></button>
+                    </div>
+
+
+
+                      <div class="modal editModal-<%= comment._id %>">
+                          <div
+                            class="modal-background"
+                            data-id="<%= comment._id %>"
+                          ></div>
+                          <div class="modal-content">
+                            <div class="box">
+                              <h1 class="title">Edit Comment</h1>
+                              <form
+                                action="/watchs/editComment/<%= watch._id %>"
+                                method="post"
+                              >
+                              <input type="hidden" name="_id" value="<%= comment._id %>">
+                                <div class="field">
+                                  <label class="label">Rating</label>
+                                  <div class="control">
+                                    <div class="select">
+                                      <select name="rating" required >
+                                        <option value="1" <%= comment.rating === 1 ? 'selected' : '' %>>1</option>
+                                        <option value="2"  <%= comment.rating === 2 ? 'selected' : '' %>>2</option>
+                                        <option value="3"  <%= comment.rating === 3 ? 'selected' : '' %>>3</option>
+                                      </select>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="field">
+                                  <label class="label">Comment</label>
+                                  <div class="control">
+                                    <textarea
+                                      class="textarea"
+                                      name="content"
+                                      placeholder="Write your comment"
+                                      required
+                                    ><%= comment.content %></textarea>
+                                  </div>
+                                </div>
+                                <div class="field is-grouped">
+                                  <div class="control">
+                                    <button
+                                      type="submit"
+                                      class="button is-link"
+                                    >
+                                      Submit
+                                    </button>
+                                  </div>
+                                </div>
+                              </form>
+                            </div>
+                          </div>
+                          <button
+                            data-id="<%= comment._id %>"
+                            class="modal-close is-large"
+                            aria-label="close"
+                          ></button>
+                      </div>
+                    </div>
+                  </article>
+                  <% }) %> <% } else { %>
+                  <p>No comments yet.</p>
+                  <% } %>
+                  <hr />
+                  <h2 class="title is-5">Add a Comment</h2>
+                  <% if(message) { %>
+                  <div class="notification is-danger"><%= message %></div>
+                  <% } %>
+
+                  <form
+                    action="/watchs/addComments/<%= watch._id %>"
+                    method="post"
+                  >
+                    <div class="field">
+                      <label class="label">Rating</label>
+                      <div class="control">
+                        <div class="select">
+                          <select name="rating" required>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="field">
+                      <label class="label">Comment</label>
+                      <div class="control">
+                        <textarea
+                          class="textarea"
+                          name="content"
+                          placeholder="Write your comment"
+                          required
+                        ></textarea>
+                      </div>
+                    </div>
+                    <div class="field is-grouped">
+                      <div class="control">
+                        <button type="submit" class="button is-link">
+                          Submit
+                        </button>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </body>
+</html>

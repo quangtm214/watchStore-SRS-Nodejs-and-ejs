@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bulma@1.0.0/css/bulma.min.css"
+    />
+    <title><%=title%></title>
+  </head>
+  <body>
+    <section class="section">
+      <div class="container">
+        <div class="columns is-centered">
+          <div class="column is-half">
+            <div class="columns is-centered">
+              <div class="column is-half">
+                <h1
+                  class="title"
+                  style="display: flex; justify-content: center"
+                >
+                  <%= title %>
+                </h1>
+              </div>
+            </div>
+            <form action="/auth/signup" method="post" class="box">
+              <div class="field">
+                <label class="label" for="membername">Membername:</label>
+                <div class="control">
+                  <input
+                    class="input"
+                    type="text"
+                    id="membername"
+                    name="membername"
+                    required
+                    placeholder="Enter your membername"
+                  />
+                  <% if (message) { %> <%= message %> <% } %>
+                </div>
+              </div>
+              <div class="field">
+                <label class="label" for="password">Password:</label>
+                <div class="control">
+                  <input
+                    class="input"
+                    type="password"
+                    id="password"
+                    name="password"
+                    required
+                    placeholder="Enter your password"
+                  />
+                </div>
+              </div>
+              <div class="field">
+                <div class="control">
+                  <button type="submit" class="button is-primary">
+                    Sign Up
+                  </button>
+                </div>
+              </div>
+            </form>
+            <p class="has-text-centered">
+              Already have an account? <a href="/auth/login">Log in</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </body>
+</html>

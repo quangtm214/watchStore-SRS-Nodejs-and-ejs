@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bulma@1.0.0/css/bulma.min.css"
+    />
+    <title>Personal Page</title>
+  </head>
+  <body>
+    <%- include('./navbar.ejs'); %>
+    <section class="section">
+      <div class="container">
+        <div class="columns is-centered">
+          <div class="column is-half">
+            <div class="box">
+              <h1 class="title has-text-centered">Personal Information</h1>
+              <% if(member) { %>
+              <div class="content">
+                <p><strong>Member Name:</strong> <%= member.membername %></p>
+                <p>Change Password</p>
+               
+                <form action="/auth/personal/changePassword" method="post">
+                  <div class="field">
+                    <label class="label" for="password">Old Password:</label>
+                    <div class="control">
+                      <input
+                        class="input"
+                        type="password"
+                        id="password"
+                        name="oldPassword"
+                        required
+                        placeholder="Enter your old password"
+                      />
+                    </div>
+                  </div>
+                  <div class="field">
+                    <label class="label" for="password">New Password:</label>
+                    <div class="control">
+                      <input
+                        class="input"
+                        type="password"
+                        id="password"
+                        name="newPassword"
+                        required
+                        placeholder="Enter your new password"
+                      />
+                    </div>
+                  </div>
+                  <div class="field">
+                    <div class="control">
+                      <button type="submit" class="button is-primary">
+                        Change Password
+                      </button>
+                    </div>
+                </form>
+              </div>
+              <% } else { %>
+              <p class="has-text-centered">No member information found.</p>
+              <% } %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </body>
+</html>

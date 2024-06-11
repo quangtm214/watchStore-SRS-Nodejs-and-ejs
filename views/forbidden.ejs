@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bulma@1.0.0/css/bulma.min.css"
+    />
+    <title>403 Forbidden</title>
+    <style>
+      .full-height {
+        height: 100vh;
+      }
+      .flex-center {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+      }
+    </style>
+  </head>
+  <body>
+    <section class="hero is-danger is-fullheight">
+      <div class="hero-body">
+        <div class="container has-text-centered flex-center">
+          <h1 class="title">403 Forbidden</h1>
+          <p class="subtitle"><%= message %></p>
+          <button
+            class="button is-danger is-light"
+            onclick="window.history.back()"
+          >
+            Go Back
+          </button>
+        </div>
+      </div>
+    </section>
+  </body>
+</html>
