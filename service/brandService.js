@@ -1,4 +1,6 @@
 const Brand = require("../model/brandModel");
+const Watch = require("../model/watchModel");
+const watchService = require("./watchesService");
 
 class brandService {
   static getBrand() {
@@ -14,6 +16,10 @@ class brandService {
       { brandName: brandName },
       { new: true }
     );
+  }
+  static async deleteBrand(brandId) {
+    await Watch.deleteMany({ brand: brandId });
+    return Brand.findByIdAndDelete(brandId);
   }
 }
 module.exports = brandService;

@@ -25,6 +25,14 @@
           const brandId = $(this).data("id");
           $(`.editModal-${brandId}`).removeClass("is-active");
         });
+        $("[id^='showDeleteModal-']").click(function () {
+          const brandId = $(this).data("id");
+          $(`.deleteModal-${brandId}`).addClass("is-active");
+        });
+        $(".modal-close, .modal-background, .CancelModel").click(function () {
+          const brandId = $(this).data("id");
+          $(`.deleteModal-${brandId}`).removeClass("is-active");
+        });
       });
     </script>
   </head>
@@ -54,7 +62,10 @@
                   class="button is-primary"
                   >Edit</a
                 >
-                <a href="/brand/<%= brand.id %>" class="button is-danger"
+                <a
+                  id="showDeleteModal-<%= brand.id %>"
+                  data-id="<%= brand.id %>"
+                  class="button is-danger"
                   >Delete</a
                 >
               </td>
@@ -93,6 +104,44 @@
                 data-id="<%= brand.id %>"
                 class="modal-close is-large"
                 aria-label="close"
+              ></button>
+            </div>
+
+            <div class="modal deleteModal-<%= brand.id %>">
+              <div class="modal-background" data-id="<%= brand.id %>"></div>
+              <div class="modal-content">
+                <div class="box">
+                  <h1 class="title">Confirm Delete This Brand</h1>
+                  <p>
+                    If you delete this brand, all watches under this brand will
+                    be deleted.<br />
+                    Are you sure you want to delete this Brand?<br />
+                    This action cannot be undone.
+                  </p>
+                  <form action="/brands/delete/<%= brand.id %>" method="get">
+                    <div class="field is-grouped is-grouped-centered">
+                      <div class="control">
+                        <button type="submit" class="button is-danger">
+                          Delete
+                        </button>
+                      </div>
+                      <div class="control">
+                        <button
+                          type="button"
+                          class="button is-light CancelModel"
+                          data-id="<%= brand.id %>"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+              <button
+                class="modal-close is-large"
+                aria-label="close"
+                data-id="<%= brand.id %>"
               ></button>
             </div>
             <% }); %>

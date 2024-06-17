@@ -110,38 +110,33 @@ class authController {
     res.redirect("/");
   }
   async personal(req, res) {
-    console.log("req.member", req.member);
+    const message = req.query.message;
+    console.log("message", message);
     const member = await authService.getMemberById(req.member._id);
-    console.log("presonalMember", member);
     res.render("personal", {
       title: "personal",
       member: member,
+      message: message,
     });
   }
 
   async ChangePassword(req, res, next) {
-    try {
-      let member = req.body;
-      member = { ...member, id: req.member.id };
-      const result = await authService.ChangePassword(member);
-      if (result === "Password is not correct") {
-        res.status(400);
-        return res.render("personal", {
-          title: "personal",
-          message: "Password is not correct",
-        });
-      }
-      const cookieOptions = {
-        expires: new Date(
-          Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
-        ),
-        httpOnly: true,
-      };
-      res.cookie("jwt", result.token, cookieOptions);
-      res.redirect("/auth/personal");
-    } catch (error) {
-      next(error);
+    let member = req.body;
+    member = { ...member, id: req.member.id };
+    const result = await authService.ChangePassword(member);
+    console.log("result", result);
+    if (result === "Old password is incorrect") {
+      res.status(400);
+      return res.redirect("/auth/personal?message=Old password is incorrect");
     }
+    const cookieOptions = {
+      expires: new Date(
+        Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
+      ),
+      httpOnly: true,
+    };
+    res.cookie("jwt", result.token, cookieOptions);
+    res.redirect("/auth/personal");
   }
 }
 module.exports = new authController();

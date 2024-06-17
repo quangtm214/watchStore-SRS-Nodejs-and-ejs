@@ -8,6 +8,14 @@
       href="https://cdn.jsdelivr.net/npm/bulma@1.0.0/css/bulma.min.css"
     />
     <title>Personal Page</title>
+    <script>
+      setTimeout(function() {
+        var element = document.getElementById('message');
+        if (element) {
+          element.style.display = 'none';
+        }
+      }, 1500);
+    </script>
   </head>
   <body>
     <%- include('./navbar.ejs'); %>
@@ -19,7 +27,26 @@
               <h1 class="title has-text-centered">Personal Information</h1>
               <% if(member) { %>
               <div class="content">
-                <p><strong>Member Name:</strong> <%= member.membername %></p>
+                <div class="field">
+                  <% if (message && message != '') { %>
+                    <article class="message is-warning" id="message">
+                      <div  class="message-body">
+                        <%= message %>
+                      </div>
+                    </article>
+                  <% } %>
+                  <label class="label">Member Name</label>
+                  <form action='/users/updateMemberName' method="post">  
+                    <div class="grid">
+                    <div class="cell is-col-span-3 control">
+                      <input class="input" type="text" value="<%= member.membername %>" name="membername">
+                    </div>
+                    <div class="cell control">
+                      <button class="button is-primary" type="submit">Update</button>
+                    </div>
+                  </div>
+                  </form>
+                </div>
                 <p>Change Password</p>
                
                 <form action="/auth/personal/changePassword" method="post">
@@ -37,6 +64,7 @@
                     </div>
                   </div>
                   <div class="field">
+              
                     <label class="label" for="password">New Password:</label>
                     <div class="control">
                       <input

@@ -28,5 +28,14 @@ class brandController {
       next(error);
     }
   }
+  static async deleteBrand(req, res, next) {
+    try {
+      const brandId = req.params.brandId;
+      const result = await brandService.deleteBrand(brandId);
+      res.redirect("/brands");
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 module.exports = brandController;

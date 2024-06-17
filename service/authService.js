@@ -6,32 +6,6 @@ var JwtStrategy = require("passport-jwt").Strategy;
 var ExtractJwt = require("passport-jwt").ExtractJwt;
 
 class authService {
-  // constructor() {
-  //   this.otps = {};
-  //   this.otps.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
-  //   this.otps.secretOrKey = process.env.JWT_SECRET;
-
-  //   passport.use(
-  //     new JwtStrategy(this.otps, (jwt_payload, done) => {
-  //       console.log("JWT payload: ", jwt_payload);
-  //       Member.findOne({ _id: jwt_payload._id }, (err, member) => {
-  //         if (err) {
-  //           return done(err, false);
-  //         } else if (member) {
-  //           return done(null, member);
-  //         } else {
-  //           return done(null, false);
-  //         }
-  //       });
-  //     })
-  //   );
-  // }
-
-  // static verifyUser = passport.authenticate("jwt", { session: false });
-  // static getToken(user) {
-  //   return jwt.sign(user, process.env.JWT_SECRET, { expiresIn: 3600 });
-  // }
-
   static signup = async (member) => {
     const existingMember = await Member.findOne({ membername: member.name });
     if (existingMember) {
@@ -46,6 +20,7 @@ class authService {
     const existingMember = await Member.findOne({
       membername: member.membername,
     });
+    console.log("existingMember", existingMember);
     if (!existingMember) {
       return "Member not found";
     }
@@ -53,6 +28,7 @@ class authService {
       member.password,
       existingMember.password
     );
+    console.log("truePassword", truePassword);
     if (!truePassword) return "Password is not correct";
 
     const token = await jwt.sign(
@@ -101,7 +77,7 @@ class authService {
       member.oldPassword,
       existingMember.password
     );
-
+    console.log("truePassword", truePassword);
     if (!truePassword) {
       return "Old password is incorrect";
     }

@@ -26,7 +26,7 @@
             </div>
             <% if(success_msg != ''){ %> <%= success_msg %> <% } %> <%
             if(error_msg != ''){ %> <%= error %> <% } %> <% if(error != ''){ %>
-            <%= error %> <% } %>
+            <%= error %> <% } %><% if(message != ''){ %> <%= message %> <% } %>
             <form action="/auth/login" method="post" class="box">
               <div class="field">
                 <label class="label" for="membername">Membername:</label>

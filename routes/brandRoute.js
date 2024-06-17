@@ -23,5 +23,12 @@ brandRoute
     authController.restricAdmin,
     brandController.updateBrand
   );
+brandRoute
+  .route("/delete/:brandId")
+  .get(
+    authController.protect,
+    authController.restricAdmin,
+    brandController.deleteBrand
+  );
 
 module.exports = brandRoute;

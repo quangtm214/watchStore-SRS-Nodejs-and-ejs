@@ -24,6 +24,7 @@ const authRoute = require("./routes/authRoute");
 const brandRoute = require("./routes/brandRoute");
 const watchRoute = require("./routes/watchRoute");
 const authController = require("./controller/authController");
+const memberRoute = require("./routes/memberRoute");
 
 var app = express();
 
@@ -56,25 +57,6 @@ app.use(function (req, res, next) {
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use(async (req, res, next) => {
-  //   try {
-  //     const memberId = req.session.memberId;
-  //     if (memberId) {
-  //       const member = await memberSerrvice.findMemberById(memberId);
-  //       if (member) {
-  //         res.locals.member = member.toObject(); // Sử dụng toObject() nếu là Mongoose document
-  //       } else {
-  //         console.log("Member not found");
-  //         res.locals.member = null;
-  //       }
-  //     } else {
-  //       res.locals.member = null;
-  //     }
-  //   } catch (error) {
-  //     console.error("Error in auth middleware:", error);
-  //     res.locals.member = null;
-  //   }
-  //   next();
-  // });
   try {
     const token = req.cookies.jwt;
     if (token) {
@@ -111,7 +93,7 @@ app.use("/member", usersRouter);
 app.use("/auth", authRoute);
 app.use("/brands", brandRoute);
 app.use("/watchs", watchRoute);
-
+app.use("/users", memberRoute);
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
   next(createError(404));
